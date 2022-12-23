@@ -27,6 +27,6 @@ const port = PORT || 3000
 
 // routes
 app.get('/', (req, res) => res.send('MS order management'))
-// app.use('/v1/products', router)
+app.use('/v1', router)
 
 export { app, port }
