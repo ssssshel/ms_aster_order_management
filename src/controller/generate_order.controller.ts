@@ -6,7 +6,7 @@ import {
   GenericServiceErrorResponse,
   GenericServiceResponse,
 } from "../utils/interfaces";
-import { status201Created, status500InternalServerError } from "../utils/methods";
+import { status201Created, status400BadRequest, status500InternalServerError } from "../utils/methods";
 
 const model = UserOrderModel
 const resourceName = "user_order"
@@ -15,7 +15,7 @@ export async function GenerateOrderController(
   req: any,
   res: Response<GenericServiceResponse | GenericServiceErrorResponse>
 ) {
-  const { id_user, products } = req.body
+  const { id_user, products, shipping_address } = req.body
   console.log(req.body)
 
   const id_order_state = 2
@@ -23,10 +23,14 @@ export async function GenerateOrderController(
   const order_date = new Date().toLocaleString()
   const delivery_date = new Date(new Date(currentDate).setDate(currentDate.getDate() + 11)).toLocaleString()
 
-  console.log({ order_date, delivery_date })
+  // console.log({ order_date, delivery_date })
+
+  if (!products || products.length == 0) {
+    return res.status(400).json(status400BadRequest("Products array is invalid"))
+  }
 
   const productIds = extractIds(products)
-  console.log({ productIds })
+  // console.log({ productIds })
 
   try {
     const productsDataResponse = await GetProductsData(productIds, "dd")
@@ -49,7 +53,8 @@ export async function GenerateOrderController(
       order_date,
       delivery_date,
       total_items_quantity: totalQuantity,
-      products: productsData
+      products: productsData,
+      shipping_address
     }).then(() => {
       productsData.forEach(async (product) => {
         await IndividualProductModel.update({ product_stock: Sequelize.literal(`product_stock - ${product.product_quantity}`) }, {
@@ -68,14 +73,10 @@ export async function GenerateOrderController(
 
 function extractIds(products: any[]) {
   let ids: number[] = []
-  // let qnt: number[] = []
 
   products.map(({ individual_id }) => {
     ids.push(individual_id)
   })
-  // products.map(({ quantity }) => {
-  //   ids.push(quantity)
-  // })
 
   return ids
 }

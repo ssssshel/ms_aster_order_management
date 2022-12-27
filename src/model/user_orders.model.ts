@@ -27,6 +27,9 @@ export const UserOrderModel = sequelize.define(
   },
   products: {
     type: DataTypes.JSON
+  },
+  shipping_address: {
+    type: DataTypes.JSON
   }
 },
   {
