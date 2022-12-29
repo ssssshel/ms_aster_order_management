@@ -33,6 +33,9 @@ export const UserOrderModel = sequelize.define(
   },
   shipping_price: {
     type: DataTypes.INTEGER
+  },
+  id_transaction_pay: {
+    type: DataTypes.STRING
   }
 },
   {

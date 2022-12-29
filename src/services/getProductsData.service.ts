@@ -19,7 +19,7 @@ export async function GetProductsData(products: number[], accessToken: string) {
     }
 
     const res: any = await response.json()
-    console.log(res)
+    // console.log(res)
 
     if (res.error) {
       return { error: true, content: res.serverMessage }
