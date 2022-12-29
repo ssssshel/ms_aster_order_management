@@ -15,7 +15,7 @@ export async function GenerateOrderController(
   req: any,
   res: Response<GenericServiceResponse | GenericServiceErrorResponse>
 ) {
-  const { id_user, products, shipping_address, delivery_date, final_price, payment_method } = req.body
+  const { id_user, products, shipping_address, delivery_date, final_price, payment_method, shipping_price } = req.body
   console.log(req.body)
 
   const id_order_state = 2
@@ -42,7 +42,7 @@ export async function GenerateOrderController(
     const productsArray = productsDataResponse.content.responseBody
     console.log({ productsArray })
 
-    const { productsData, totalPrice, totalPriceWdisc, totalQuantity } = await extractProductsData(productsArray, products)
+    const { productsData, totalPrice, totalPriceWdisc, totalQuantity } = await extractProductsData(productsArray, products, shipping_price)
     console.log({ productsData, totalPrice, totalPriceWdisc, totalQuantity })
 
     if (final_price != totalPriceWdisc) {
@@ -91,10 +91,10 @@ interface IExtractPD {
   totalPriceWdisc: number
   totalQuantity: number
 }
-async function extractProductsData(products: any[], selectedProducts: any[]): Promise<IExtractPD> {
+async function extractProductsData(products: any[], selectedProducts: any[], shipping_price: number): Promise<IExtractPD> {
   let productsData: any[] = []
-  let prices: number[] = []
-  let pricesWdisc: number[] = []
+  let prices: number[] = [shipping_price]
+  let pricesWdisc: number[] = [shipping_price]
   let quantities: number[] = []
   let totalPrice: number
   let totalPriceWdisc: number
