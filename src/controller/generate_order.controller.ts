@@ -6,7 +6,7 @@ import {
   GenericServiceErrorResponse,
   GenericServiceResponse,
 } from "../utils/interfaces";
-import { status201Created, status400BadRequest, status500InternalServerError } from "../utils/methods";
+import { status201Created, status400BadRequest, status412PreconditionFailed, status500InternalServerError } from "../utils/methods";
 
 const model = UserOrderModel
 const resourceName = "user_order"
@@ -15,13 +15,13 @@ export async function GenerateOrderController(
   req: any,
   res: Response<GenericServiceResponse | GenericServiceErrorResponse>
 ) {
-  const { id_user, products, shipping_address } = req.body
+  const { id_user, products, shipping_address, delivery_date, final_price, payment_method } = req.body
   console.log(req.body)
 
   const id_order_state = 2
-  const currentDate = new Date()
+  // const currentDate = new Date()
   const order_date = new Date().toLocaleString()
-  const delivery_date = new Date(new Date(currentDate).setDate(currentDate.getDate() + 11)).toLocaleString()
+  // const delivery_date = new Date(new Date(currentDate).setDate(currentDate.getDate() + 11)).toLocaleString()
 
   // console.log({ order_date, delivery_date })
 
@@ -44,6 +44,10 @@ export async function GenerateOrderController(
 
     const { productsData, totalPrice, totalPriceWdisc, totalQuantity } = await extractProductsData(productsArray, products)
     console.log({ productsData, totalPrice, totalPriceWdisc, totalQuantity })
+
+    if (final_price != totalPriceWdisc) {
+      return res.status(412).json(status412PreconditionFailed("final price", "final price w discounts from client is not same that final price from server"))
+    }
 
     const newOrder = await model.create({
       id_user,

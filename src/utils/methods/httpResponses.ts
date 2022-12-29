@@ -102,6 +102,15 @@ export const status404NotFound = (resourceNotFound?: String, detailMessage?: Str
   }
 }
 
+export const status412PreconditionFailed = (precondition: string, detailMessage?: string): GenericServiceErrorResponse => {
+  return {
+    httpStatus: 412,
+    serverMessage: `Precondition ${precondition} failed`,
+    errorMessage: detailMessage,
+    error: true
+  }
+}
+
 export const status500InternalServerError = (detailMessage?: String): GenericServiceErrorResponse => {
   return {
     httpStatus: 500,
