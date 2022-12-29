@@ -30,6 +30,9 @@ export const UserOrderModel = sequelize.define(
   },
   shipping_address: {
     type: DataTypes.JSON
+  },
+  shipping_price: {
+    type: DataTypes.INTEGER
   }
 },
   {
