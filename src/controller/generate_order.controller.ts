@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { Sequelize } from "sequelize";
-import { UserOrderModel, products_on_order_model, IndividualProductModel } from "../model";
+import { UserOrderModel, IndividualProductModel } from "../model";
 import { ResetCartService } from "../services/cartReset.service";
 import { ClientFacturationService } from "../services/clientFacturation.service";
 import { GetProductsData } from "../services/getProductsData.service";
