@@ -4,7 +4,6 @@ import { generateOrderValidator } from "../utils/middlewares/validators/generate
 
 const router = Router()
 
-router.get("get-orders/:userId/orderId")
 router.post("/generate-order", generateOrderValidator, GenerateOrderController)
 
 export default router
