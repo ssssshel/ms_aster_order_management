@@ -94,19 +94,21 @@ export async function GenerateOrderController(
           console.log(`El pago falló, no se actualizó el estado de la orden con id: ${res.dataValues.id_user_order} a: 3 (Cancelado) `)
           throw new Error(`${billingAction.data}`);
         })
+      } else {
+        await model.update({ id_transaction_pay: billingAction.data.id }, { where: { id_user_order: res.dataValues.id_user_order } }).then(() => {
+          // para el futuro se debe habilitar un almacenamiento del logging generado
+          console.log(`El pago se realizó con éxito, s/e no se actualizó el id_transaction_pay de la orden con id: ${res.dataValues.id_user_order} a: ${billingAction.data.id}`)
+        })
+
+        // si la facturacion no falla
+        // se actualiza el stock de cada uno de los productos ordenados || TALON DE AQUILES OJO
+        const updateStockAction = await UpdateStocksService(productsData)
+
+        // finalmente se vacía el carrito de compras actual
+        const updateCartAction = await ResetCartService(id_user, cAccessToken)
+
       }
 
-      await model.update({ id_transaction_pay: billingAction.data.id }, { where: { id_user_order: res.dataValues.id_user_order } }).then(() => {
-        // para el futuro se debe habilitar un almacenamiento del logging generado
-        console.log(`El pago se realizó con éxito, s/e no se actualizó el id_transaction_pay de la orden con id: ${res.dataValues.id_user_order} a: ${billingAction.data.id}`)
-      })
-
-      // si la facturacion no falla
-      // se actualiza el stock de cada uno de los productos ordenados || TALON DE AQUILES OJO
-      const updateStockAction = await UpdateStocksService(productsData)
-
-      // finalmente se vacía el carrito de compras actual
-      const updateCartAction = await ResetCartService(id_user, cAccessToken)
 
     }).catch((err) => { throw new Error(`${err}`) })
 
