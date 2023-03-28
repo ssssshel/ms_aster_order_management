@@ -121,7 +121,7 @@ export async function GenerateOrderController(
 }
 
 function extractIds(products: any[]) {
-  let ids: number[] = []
+  const ids: number[] = []
 
   products.map(({ individual_id }) => {
     ids.push(individual_id)
@@ -137,17 +137,17 @@ interface IExtractPD {
   totalQuantity: number
 }
 async function extractProductsData(products: any[], selectedProducts: any[], shipping_price: number): Promise<IExtractPD> {
-  let productsData: any[] = []
-  let prices: number[] = [shipping_price]
-  let pricesWdisc: number[] = [shipping_price]
-  let quantities: number[] = []
+  const productsData: any[] = []
+  const prices: number[] = [shipping_price]
+  const pricesWdisc: number[] = [shipping_price]
+  const quantities: number[] = []
   let totalPrice: number
   let totalPriceWdisc: number
   let totalQuantity: number
 
   products.map((product) => {
-    let selectedProduct = selectedProducts.find((p) => p.individual_id == product.id_individual_product)
-    let data = {
+    const selectedProduct = selectedProducts.find((p) => p.individual_id == product.id_individual_product)
+    const data = {
       id_individual_product: product.id_individual_product,
       id_global_product: product.id_global_product,
       product_size: {
